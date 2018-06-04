@@ -5,7 +5,7 @@ import '../styles/App.css';
 import * as THREE from 'three'
 import OrbitControls from '../util/OrbitControls.js';
 
-let scene, camera, renderer, controls, mesh;
+let scene, camera, renderer, controls, mesh, line;
 let loader = new THREE.JSONLoader();
 let textureLoader = new THREE.TextureLoader();
 const WIDTH = window.innerWidth/2;
@@ -19,18 +19,24 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.init()
-    this.animate()
+    this.init();
+    this.animate();
   }
   
   init() {
     scene = new  THREE.Scene();
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize( WIDTH, HEIGHT);
-    // scene.background = new THREE.Color(0x754E46);
+    scene.background = new THREE.Color(0x754E46);
     document.getElementById('3d-rendering').appendChild( renderer.domElement );
     this.addCamera();
+    this.addLight();
     this.addMaterial();
+  }
+
+  animate(){
+    renderer.render(scene, camera);
+    window.requestAnimationFrame(this.animate.bind(this));
   }
 
   addMaterial(){
@@ -45,24 +51,31 @@ class App extends Component {
       mesh = new THREE.Mesh( geometry, material );
       scene.add( mesh );
       mesh.scale.set( 10, 10, 10 );
-    } );
+    });
   }
 
   addCamera() {
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 120;
     camera.target = new THREE.Vector3();
-    controls = new OrbitControls(camera, renderer.domElement);
+    controls = new OrbitControls( camera, renderer.domElement );
     controls.minDistance = 50;
-		controls.maxDistance = 200;
+    controls.maxDistance = 200;
     controls.update();
     scene.add(camera);
   }
 
-  animate() {
-    renderer.render(scene, camera);
+  addLight() {
+    scene.add( new THREE.AmbientLight( 0x443333 ) );
+    var light = new THREE.DirectionalLight( 0xffddcc, 1 );
+    light.position.set( 1, 0.75, 0.5 );
+    scene.add( light );
+
+    var light = new THREE.DirectionalLight( 0xccccff, 1 );
+    light.position.set( -1, 0.75, -0.5 );
+    scene.add( light );
   }
-  
+
   render() {
     return (
       <div className="App">
