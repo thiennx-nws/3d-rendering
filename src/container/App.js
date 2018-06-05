@@ -6,10 +6,10 @@ import * as THREE from 'three'
 import OrbitControls from '../util/OrbitControls.js';
 
 let scene, camera, renderer, controls, mesh, line;
-let loader = new THREE.JSONLoader();
+let loader = new THREE.ObjectLoader();
 let textureLoader = new THREE.TextureLoader();
-const WIDTH = window.innerWidth/2;
-const HEIGHT = window.innerHeight/2;
+const WIDTH = window.innerWidth/ 1.4;
+const HEIGHT = window.innerHeight/ 1.4;
 
 class App extends Component {
   constructor(props){
@@ -40,23 +40,49 @@ class App extends Component {
   }
 
   addMaterial(){
-    loader.load( '/models/leeper/LeePerrySmith.json', function( geometry ) {
-      let material = new THREE.MeshPhongMaterial( {
+    loader.load( 'models/gun/test.json', function( geometry ) {
+      let gun_masterial = new THREE.MeshPhongMaterial({
+        map: textureLoader.load( 'models/gun/sung2.jpg'),
+        // shininess: 25
         specular: 0x111111,
-        map: textureLoader.load( 'models/leeper/Map-COL.jpg' ),
-        specularMap: textureLoader.load( 'models/leeper/Map-SPEC.jpg' ),
-        normalMap: textureLoader.load( 'models/leeper/Infinite-Level_02_Tangent_SmoothUV.jpg' ),
+        // map: textureLoader.load( 'models/leeper/Map-COL.jpg' ),
+        // specularMap: textureLoader.load( 'models/leeper/Map-SPEC.jpg' ),
+        // normalMap: textureLoader.load( 'models/leeper/Infinite-Level_02_Tangent_SmoothUV.jpg' ),
         shininess: 25
-      } );
-      mesh = new THREE.Mesh( geometry, material );
-      scene.add( mesh );
-      mesh.scale.set( 10, 10, 10 );
+      });
+      let coin_masterial = new THREE.MeshPhongMaterial({
+        specular: 0x111111,
+        map: textureLoader.load( 'models/gun/coin.jpg'),
+        shininess: 25
+        // specular: 0x111111,
+        // map: textureLoader.load( 'models/leeper/Map-COL.jpg' ),
+        // specularMap: textureLoader.load( 'models/leeper/Map-SPEC.jpg' ),
+        // normalMap: textureLoader.load( 'models/leeper/Infinite-Level_02_Tangent_SmoothUV.jpg' ),
+        // shininess: 25
+      });
+      geometry.getObjectByName('Coin').material = coin_masterial;
+      geometry.getObjectByName('Gun').material = gun_masterial;
+      geometry.getObjectByName('Coin').scale.set(1, 1, 1);
+      geometry.getObjectByName('Gun').scale.set(1, 1, 1);
+      scene.add(geometry);
+      // let material = new THREE.MeshPhongMaterial( {
+      //   specular: 0x111111,
+      //   map: textureLoader.load( 'models/leeper/Map-COL.jpg' ),
+      //   specularMap: textureLoader.load( 'models/leeper/Map-SPEC.jpg' ),
+      //   normalMap: textureLoader.load( 'models/leeper/Infinite-Level_02_Tangent_SmoothUV.jpg' ),
+      //   shininess: 25
+      // } );
+      // mesh = new THREE.Mesh( geometry, material );
+      // mesh.scale.set( 10, 10, 10 );
+      // let object = new THREE.MeshLambertMaterial( { color: 0xff0000, opacity: 0.75, transparent: true } )
+      // let children = new THREE.Mesh(geometry, object);
+      // scene.add(children)
     });
   }
 
   addCamera() {
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 120;
+    camera.position.z = 50
     camera.target = new THREE.Vector3();
     controls = new OrbitControls( camera, renderer.domElement );
     controls.minDistance = 50;
